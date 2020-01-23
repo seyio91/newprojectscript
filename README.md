@@ -1,5 +1,5 @@
 ## New Project Script
-NewProject script automates the manual process involved in starting a new project and uploading to git.    
+Script to Automate Creating a new project and Pushing to GitHub from Command Line.    
   
 ## Dependencies  
  **Github personal access token** is required to create repo as well as making commits. Link on Creating your Personal Access Token is [https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line).  
@@ -62,13 +62,10 @@ Starts the interactive session
 to view help option  
   
 ### Other Script Features  
-- regex variable which helps restrict the permitted symbols that can be used in the repo name. This can be changed to permit other symbols  
-- Check for if a repository already exists in the specified project folder.   
-Check if Duplicate repo exists on github profile.
+- rRegex variable which helps restrict the permitted symbols that can be used in the repo name. This can be changed to permit other symbols  
+- Check for existing Repo in project folder.   
+- Duplicate Repo Check.
 
 ### Planned Improvements.  
 - Specific Project Types. Ability to specify the type of project and create directory structure by project e.g creating virtual env for python or dockerfiles for docker projects  
 - Add Testing
-
-
-GITHUB Link to project is [here](https://github.com/seyio91/newprojectscript)

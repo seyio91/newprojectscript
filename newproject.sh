@@ -1,15 +1,13 @@
 #!/bin/bash
-# Script is used to automate the process of creating new project as well as attaching a github repo to the project
+# Script is used to automate the process of creating new project and push to new github repo
 # New Project Script Requires a GITHUB_USERNAME, GITHUB_TOKEN for using the GITHUB API to create a new repo
 # Link for Creating Personal Access Tokens  https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
 # GITHUB_USERNAME and GITHUB_TOKEN can be passed as variables on commandline or by exporting the variables in the bash shell before running the script
-# the script will Read this variables and there would be no need to pass it in on the commandline
 
-# see https://www.seyiobaweya.tech/article
+# see https://www.seyiobaweya.tech/articles/2020-01-17/new-project-script/
 
 # script has a jq dependency for reading json. this is only used to check if the repo currently exists in your github acct. 
-# script will be expanded to skip this test
-# Export Personal Access Token to use script. export GITHUB_TOKEN="testtokenfromgithub"
+# Refinements are welcome
 
 normal="\033[0m"
 greentext="\033[32m"
@@ -52,8 +50,8 @@ usage(){
     echo " -u : Github Username"
     echo " -t : Github Personal Access Token"
     echo -e " -h : Help (No Arg)\n"
-    echo -e " Sample: newproject -i reponame: To Get Interactive prompt"
-    echo -e " Sample: newproject -f project folder  reponame: To Specify a different Project folder from Repo name\n"
+    warning " Sample: newproject -i reponame: To Get Interactive prompt"
+    warning " Sample: newproject -f project folder  reponame: To Specify a different Project folder from Repo name\n"
     exit 1
 }
 
@@ -163,7 +161,7 @@ currentgitdir $REPO_FOLDER
 if [[ ! -d $REPO_FOLDER ]]; then
     warning "$REPO_FOLDER DOES NOT EXIST"
     echo "creating Folder $REPO_FOLDER"
-    mkdir -p $REPO_FOLDER
+    # mkdir -p $REPO_FOLDER
     sleep 1
 fi
 # END PPROJECT FOLDER
@@ -175,8 +173,8 @@ if [[ $INTERACTIVE = 1 ]]; then
     read answer
     [[ -n $answer ]] && GITHUB_USERNAME=$answer
 
-    echo -n "ENTER GIT TOKEN:  ($GITHUB_TOKEN) "
-    read answer
+    echo -n "ENTER GIT TOKEN: "
+    read -s answer
     [[ -n $answer ]] && GITHUB_TOKEN=$answer
 fi
 
@@ -198,8 +196,6 @@ for row in $(curl -s "$GITHUB_URL" | jq -r '.[] | .name'); do
     fi
 done
 
-# echo "GITHUB_URL is $GITHUB_URL"
-# echo "GITHUB_ORIGIN_URL is $GITHUB_ORIGIN_URL"
 
 echo -n "Creating GITHUB Repository $REPO_NAME ..."
 curl -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" https://api.github.com/user/repos -d '{"name":"'$REPO_NAME'"}' > /dev/null 2>&1
