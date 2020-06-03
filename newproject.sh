@@ -15,7 +15,7 @@ danger="\e[91m"
 warning="\e[93m"
 INTERACTIVE=
 REPO_NAME=
-REGEX="0-9a-zA-Z_"
+REGEX="0-9a-zA-Z_-"
 DEFAULT_DIR="$HOME/projects"
 PROJECT_DIR=${PROJECT_DIR:-$DEFAULT_DIR}
 REPO_FOLDER=
@@ -212,7 +212,7 @@ success " done.\n"
 
 # Creating README File
 echo -n "Creating PROJECT README ..."
-echo "$REPO_NAME" > README.md
+echo "### $REPO_NAME" > README.md
 success " done.\n"
 
 # ADD Git Origin
@@ -221,7 +221,7 @@ git remote add origin $GITHUB_ORIGIN_URL > /dev/null 2>&1
 success " done.\n"
 
 # Stage Readme
-git add README.md
+git add .
 
 # First Commit
 echo -n "Creating First Commit ..."
