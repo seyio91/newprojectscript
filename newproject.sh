@@ -197,7 +197,7 @@ for row in $(curl -s "$GITHUB_URL" | jq -r '.[] | .name'); do
 done
 
 
-echo -n "Creating GITHUB Repository $REPO_NAME ..."
+echo -n "Creating GITHUB Repository $REPO_NAME ...\n"
 curl -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" https://api.github.com/user/repos -d '{"name":"'$REPO_NAME'"}' > /dev/null 2>&1
 success " done.\n"
 
@@ -214,6 +214,11 @@ success " done.\n"
 echo -n "Creating PROJECT README ..."
 echo "### $REPO_NAME" > README.md
 success " done.\n"
+
+# Add .gitignore File
+echo -n "Creating Gitignore file ..."
+echo ".env" > .gitignore
+success " done. \n"
 
 # ADD Git Origin
 echo -n "Adding Remote Origin  ..."
