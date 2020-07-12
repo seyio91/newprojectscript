@@ -198,7 +198,7 @@ done
 
 
 echo -n "Creating GITHUB Repository $REPO_NAME ...\n"
-curl -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" https://api.github.com/user/repos -d '{"name":"'$REPO_NAME'"}' > /dev/null 2>&1
+curl -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" https://api.github.com/user/repos -d '{"name":"'$REPO_NAME'"}' 1> /dev/null
 success " done.\n"
 
 
