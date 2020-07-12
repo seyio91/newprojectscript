@@ -196,6 +196,9 @@ for row in $(curl -s "$GITHUB_URL" | jq -r '.[] | .name'); do
     fi
 done
 
+echo $?
+echo "Line is "
+
 
 echo -n "Creating GITHUB Repository $REPO_NAME ...\n"
 curl -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" https://api.github.com/user/repos -d '{"name":"'$REPO_NAME'"}' > /dev/null
