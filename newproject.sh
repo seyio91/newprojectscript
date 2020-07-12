@@ -66,6 +66,7 @@ nameCheck(){
     fi
 }
 
+
 currentgitdir(){
     local folder=$1
     if [[ -e "$folder/.git" ]]; then
@@ -76,7 +77,16 @@ currentgitdir(){
 
 clean_up (){
     warning "cleaning up Repo folder $REPO_FOLDER"
+    rm -rf $REPO_FOLDER
     sleep 1
+}
+
+exitCheck(){
+    local exitcode=$1
+    if [ $exitcode -ne 0 ]; then
+        error "Command Exited with 1\nExiting ...\n"
+    fi
+    clean_up
 }
 
 while getopts "d:u:t:f:ih" option; do
@@ -135,7 +145,7 @@ if [[ ! -d $PROJECT_DIR ]]; then
     if [[ $reply = "Y" || $reply = "y" ]]; then
         mkdir -p "$PROJECT_DIR"
     else
-        echo "Exiting Script. Project directory $PROJECT_DIR does not Exist"
+        error "Exiting Script. Project directory $PROJECT_DIR does not Exist"
         exit 1
     fi
 fi
@@ -189,6 +199,11 @@ GITHUB_URL="https://api.github.com/users/${GITHUB_USERNAME}/repos"
 GITHUB_ORIGIN_URL="https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/${REPO_NAME}.git"
 
 # Check if GITREPO ALREADY EXISTS
+echo "Checking If Repo Already exists \n"
+curl -s "$GITHUB_URL" > /dev/null 2>&1
+EXIT_CODE=$?
+exitCheck EXIT_CODE
+
 for row in $(curl -s "$GITHUB_URL" | jq -r '.[] | .name'); do
     if [[ $row == "$REPO_NAME" ]]; then
         error "Repo Name Already Exists"
@@ -196,11 +211,10 @@ for row in $(curl -s "$GITHUB_URL" | jq -r '.[] | .name'); do
     fi
 done
 
-echo "Line is $?"
-
-
 echo -n "Creating GITHUB Repository $REPO_NAME ...\n"
 curl -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" https://api.github.com/user/repos -d '{"name":"'$REPO_NAME'"}' > /dev/null
+EXIT_CODE=$?
+exitCheck EXIT_CODE
 success " done.\n"
 
 
