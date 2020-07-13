@@ -85,8 +85,9 @@ exitCheck(){
     local exitcode=$1
     if [ $exitcode -ne 0 ]; then
         error "Command Exited with 1\nExiting ...\n"
+        clean_up
+        exit 1
     fi
-    clean_up
 }
 
 while getopts "d:u:t:f:ih" option; do
@@ -171,7 +172,7 @@ currentgitdir $REPO_FOLDER
 if [[ ! -d $REPO_FOLDER ]]; then
     warning "$REPO_FOLDER DOES NOT EXIST"
     echo "creating Folder $REPO_FOLDER"
-    # mkdir -p $REPO_FOLDER
+    mkdir -p $REPO_FOLDER
     sleep 1
 fi
 # END PPROJECT FOLDER
@@ -199,10 +200,10 @@ GITHUB_URL="https://api.github.com/users/${GITHUB_USERNAME}/repos"
 GITHUB_ORIGIN_URL="https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/${REPO_NAME}.git"
 
 # Check if GITREPO ALREADY EXISTS
-echo "Checking If Repo Already exists \n"
+echo -n "\nChecking If Repo Already exists ..."
 curl -s "$GITHUB_URL" > /dev/null 2>&1
 EXIT_CODE=$?
-exitCheck EXIT_CODE
+exitCheck $EXIT_CODE
 
 for row in $(curl -s "$GITHUB_URL" | jq -r '.[] | .name'); do
     if [[ $row == "$REPO_NAME" ]]; then
@@ -210,11 +211,12 @@ for row in $(curl -s "$GITHUB_URL" | jq -r '.[] | .name'); do
         exit 1
     fi
 done
+success " done.\n"
 
 echo -n "Creating GITHUB Repository $REPO_NAME ...\n"
-curl -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" https://api.github.com/user/repos -d '{"name":"'$REPO_NAME'"}' > /dev/null
+curl -u "${GITHUB_USERNAME}:${GITHUB_TOKEN}" https://api.github.com/user/repos -d '{"name":"'$REPO_NAME'"}' > /dev/null 2>&1
 EXIT_CODE=$?
-exitCheck EXIT_CODE
+exitCheck $EXIT_CODE
 success " done.\n"
 
 
@@ -253,5 +255,5 @@ success " done.\n"
 echo -n "Pushing First commit to Remote ..."
 git push -u origin master > /dev/null 2>&1
 success " done."
-echo "Repo Created"
+echo "Repo ${REPO_NAME} Created"
 echo "Repo can be accessed at https://github.com/${GITHUB_USERNAME}/${REPO_NAME}"
